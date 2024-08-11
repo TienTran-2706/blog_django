@@ -34,6 +34,8 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount.providers.google',
     'crispy_forms',
     'crispy_bootstrap5',
+
+    'django_extensions',
 ]
 USER_DEFINED_APPS = [
     'posts',
@@ -137,10 +139,8 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, images)
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files (user uploads)
 MEDIA_URL = '/media/'
@@ -158,7 +158,24 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 LOGIN_REDIRECT_URL = '/'  # Where to redirect after login
 LOGOUT_REDIRECT_URL = '/'  # Where to redirect after logout
+# Add the following to the SOCIAL_AUTH_GOOGLE settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 # Crispy Forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# Add allauth settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'OAUTH_PKCE': True,
+    }
+}

@@ -2,8 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from base.base_model import BaseModel
 from base.slug_mixin import SlugMixin
+from base.base_excerpt import BaseExcerptModel
 
-class Post(BaseModel, SlugMixin):
+from media.models import Media
+class Post(BaseModel, SlugMixin, BaseExcerptModel):
 
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -15,10 +17,16 @@ class Post(BaseModel, SlugMixin):
     content = models.TextField()
     #summary of the post content
     excerpt = models.TextField(blank=True, null=True)
-    featured_image = models.ImageField(upload_to='media', blank=True)
-    thumbnail = models.ImageField(upload_to='media', blank=True)
     published_at = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
 
     def __str__(self):
         return self.title
+
+    def get_featured_image(self):
+        media = Media.objects.filter(post=self, file_type='image', file_name__icontains='featured').first()
+        return media.file_path if media else None
+
+    def get_thumbnail(self):
+        media = Media.objects.filter(post=self, file_type='image', file_name__icontains='thumbnail').first()
+        return media.file_path if media else None

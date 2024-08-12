@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Manage Social Accounts{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Manage Social Accounts</h2>
+                    <ul>
+                        {% for account in socialaccounts %}
+                        <li>
+                            {{ account.provider }} - {{ account.uid }}
+                            <a href="{% url 'socialaccount_connections' %}?action=disconnect&account={{ account.pk }}" class="text-danger">Disconnect</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
